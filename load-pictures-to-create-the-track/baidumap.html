@@ -1,0 +1,66 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+		#allmap{height:500px;width:100%;}
+		#r-result{width:100%; font-size:14px;}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=qOScFbZqeGiuS574QBAGaDbOELGj0wOD"></script>
+	<script src="qwebchannel.js"></script>
+	<title>城市名定位</title>
+</head>
+<body>
+	<div id="allmap"></div>
+	<div id="r-result">
+		经度: <input id="longitude" type="text" style="width:100px; margin-right:10px;" />
+		纬度: <input id="latitude" type="text" style="width:100px; margin-right:10px;" />
+		<input type="button" value="查询" onclick="theLocation()" />
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	map.centerAndZoom(new BMap.Point(116.331398,39.897445),11);
+	map.enableScrollWheelZoom(true);
+	map.enableContinuousZoom();
+
+	var new_point=new Array();
+	var finish = 0;
+
+	function addMarker(point){
+		var marker=new BMap.Marker(point);
+		map.addOverlay(marker);
+		var infoWin=new BMap.InfoWindow("这是您的第"+(finish+1)+"个轨迹点");
+		marker.addEventListener("click",function(){
+			map.openInfoWindow(infoWin, point);
+		})
+	}
+
+	function refreash(point){
+		//刷新
+		var new_point=new Array();
+		var finish=0;
+		map.clearOvelay();
+	}
+
+	// 用经纬度设置地图中心点
+	function theLocation(longitude ,latitude){
+		if(longitude!="" && latitude!=""){
+			//map.clearOverlays();
+			new_point[finish]=new BMap.Point(longitude, latitude);
+			map.centerAndZoom(new_point[finish], 12);
+			addMarker(new_point[finish]);	  
+			map.panTo(new_point[finish]);
+			finish++;
+		}
+	}
+
+	function drawLine(){
+		var polyline=new BMap.Polyline(new_point);
+		map.addOverlay(polyline);
+	}
+
+</script>
